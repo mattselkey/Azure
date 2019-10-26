@@ -19,8 +19,17 @@ param (
     [String]
     $Account,
     [String]
-    $TenantID 
+    $TenantID,
+    [String]
+    $AZContextPath="../../AZURE/azureprofile.json"
 )
+
+function Import-AZprofile{
+
+    Import-AzureRmContext -Path “c:\AzureProfile\azureprofile.json” | Out-Null
+
+}
+
 Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" -InformationAction Continue
 $AZModules = Get-Module | Where-Object {$_.Name -like "*Az*"} 
 
@@ -39,7 +48,14 @@ catch{
 
 }    
     try{
-            if($null -eq $Azcontext){Connect-AzAccount -Tenant  $TenantID }
+            if($null -eq $Azcontext){
+                Connect-AzAccount -Tenant  $TenantID 
+                #Linux path
+                if(-Not (Test-Path $AZContextPath) ){
+                Write-Information -MessageData "Saving Azure Account Context." -InformationAction Continue
+                Save-AzContext -Path $AZContextPath -Force
+                }
+            }
         }
         catch{
             Write-Error -Message "Error connecting to Azure $($_)"
