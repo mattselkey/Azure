@@ -53,5 +53,9 @@ catch{
     foreach($AZResouceGroup in $AZResouceGroups){
     #Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
     }
+    else{
+        Write-Information -MessageData "Azure Modules are loaded." -InformationAction Continue 
+
+    }
     }
     Disconnect-AzAccount
