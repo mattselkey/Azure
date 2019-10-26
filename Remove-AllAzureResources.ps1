@@ -17,25 +17,41 @@
 param (
     [Parameter()]
     [String]
-    $Account
+    $Account,
+    [String]
+    $TenantID 
 )
+Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" -InformationAction Continue
+$AZModules = Get-Module | Where-Object {$_.Name -like "*Az*"} 
 
-$AZModules = Get-Module | Where-Object {$_.Name -like "*Az*"}
-Write-Information -MessageData "" 
-if(
-   
-$null -eq $AZModules){Install-Module -Name Az -AllowClobber -Force}
+if($null -eq $AZModules){
+    Write-Information -MessageData "Azure Modules are not loaded, loading all Modules" -InformationAction Continue 
+    Install-Module -Name Az -AllowClobber -Force}
+    else{
+    Write-Information -MessageData "Azure Modules are loaded." -InformationAction Continue 
+    }
 
+try{
+    $Azcontext = Get-AzContext -ErrorAction SilentlyContinue | Where-Object {$_.Account -eq $Account}
+}
+catch{
+    Write-Error -Message "Cannot get current AzureConext"
 
-    Azcontext = Get-AzContext | Where-Object {$_.Account -eq $Account }
-        try{
-            if($null -eq $Azcontext){Connect-AzAccount -Account $Account}
+}    
+    try{
+            if($null -eq $Azcontext){Connect-AzAccount -Tenant  $TenantID }
         }
         catch{
-        }
+            Write-Error -Message "Error connecting to Azure $($_)"
+            Pause
+            exit
+    }
 
     $AZResouceGroups = Get-AzResourceGroup
    
-   foreach($AZResouceGroup in $AZResouceGroups){
+    if($AZResouceGroups){
+    foreach($AZResouceGroup in $AZResouceGroups){
     #Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
     }
+    }
+    Disconnect-AzAccount
