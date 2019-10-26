@@ -27,18 +27,15 @@ if(
 $null -eq $AZModules){Install-Module -Name Az -AllowClobber -Force}
 
 
-$Azcontext = Get-AzContext | Where-Object {$_.Account -eq $Account }
- #try{
- #if($null -eq $Azcontext){Connect-AzAccount -Account $Account}
- #}
- #catch{
- #}
+    Azcontext = Get-AzContext | Where-Object {$_.Account -eq $Account }
+        try{
+            if($null -eq $Azcontext){Connect-AzAccount -Account $Account}
+        }
+        catch{
+        }
 
-#$AZResouceGroups = Get-AzResourceGroup
-#
-#foreach($AZResouceGroup in $AZResouceGroups){
-#
-#Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
-
-
-}
+    $AZResouceGroups = Get-AzResourceGroup
+   
+   foreach($AZResouceGroup in $AZResouceGroups){
+    #Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
+    }
