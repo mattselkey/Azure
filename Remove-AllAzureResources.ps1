@@ -104,7 +104,7 @@ catch{
         }
     }
     else{
-        Write-Information -MessageData "Azure Modules are loaded: $($_)" -InformationAction Continue 
+        Write-Information -MessageData "The resource groups found. Nothing to do."
 
     }
 }
