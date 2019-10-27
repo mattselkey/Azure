@@ -26,7 +26,7 @@ param (
 
 BEGIN{
 function Import-AZprofile{
-    Write-Information -MessageData "Logging into Azure using saved profile" -InformationAction Continue 
+    Write-Information -MessageData "Logging into Azure using saved profile"
     try{
         $AzContent = Import-AzContext -Path $AZContextPath -ErrorAction stop
         #Import-AzContext -Path $AZContextPath 
@@ -70,8 +70,6 @@ PROCESS{
 try{
  
     $Azcontext = Get-AzContext | Where-Object {$_.Account.Id -eq  $Account}
-    $Azcontext.Account.Id
-    $Azcontext.Tenant
 }
 catch{
     Write-Error -Message "Cannot get current AzureConext"
@@ -80,11 +78,11 @@ catch{
 
     try{
             if($null -eq $Azcontext){
-                Write-Information -MessageData "Context not found from save Profile. Connecting to Azure" -InformationAction Continue
+                Write-Information -MessageData "Context not found from save Profile. Connecting to Azure" 
                 Connect-AzAccount -Tenant $Azcontext.Account.Tenant.Id
                 #Linux path
                 if(-Not (Test-Path $AZContextPath) ){
-                Write-Information -MessageData "Saving Azure Account Context." -InformationAction Continue
+                Write-Information -MessageData "Saving Azure Account Context."
                 Save-AzContext -Path $AZContextPath -Force
                 }
             }
@@ -99,7 +97,7 @@ catch{
    
     if($AZResouceGroups){
         foreach($AZResouceGroup in $AZResouceGroups){
-            Write-Information -MessageData "Removing resource group $($AZResouceGroup.ResourceGroupName)" -InformationAction Continue
+            Write-Information -MessageData "Removing resource group $($AZResouceGroup.ResourceGroupName)"
                 Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
         }
     }
@@ -110,6 +108,6 @@ catch{
 }
 END{
 
-    Disconnect-AzAccount
+    $null = Disconnect-AzAccount
 
 }
