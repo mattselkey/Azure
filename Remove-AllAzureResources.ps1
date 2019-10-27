@@ -21,39 +21,60 @@ param (
     [String]
     $TenantID,
     [String]
-    $AZContextPath="../../AZURE/azureprofile.json"
+    $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json"
 )
 #https://blogs.technet.microsoft.com/dataplatform/2016/11/16/set-your-powershell-session-to-automatically-log-into-azure/
 function Import-AZprofile{
     Write-Information -MessageData "Logging into Azure using saved profile" -InformationAction Continue 
-    Import-AzureRmContext -Path $AZContextPath | Out-Null
-    Get-AzureRmSubscription  | Select-AzureRmSubscription  | Out-Null
+    try{
+        $AzContent = Import-AzContext -Path $AZContextPath -ErrorAction stop
+        #Import-AzContext -Path $AZContextPath 
+        return $AzContent
+    }
+    catch{
+        Write-Error -Message "Error loading profile: $($_)"
+        Pause
+        exit
+    }
+    
 
 }
 
 Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" -InformationAction Continue
-$AZModules = Get-Module | Where-Object {$_.Name -like "*Az*"} 
+$AZModules = Get-Module | Where-Object {($_.Name -like "*Az.*")} 
+#$AZResourceManagerModules = Get-Module | Where-Object {($_.Name -like "AzureRM*")}
 
-if($null -eq $AZModules){
-    Write-Information -MessageData "Azure Modules are not loaded, loading all Modules" -InformationAction Continue 
-    Install-Module -Name Az -AllowClobber -Force}
+if(($null -eq $AZModules)){
+    Write-Information -MessageData "Azure Modules are not loaded, loading Modules" -InformationAction Continue 
+    Find-Module -Name Az | Install-Module -AllowClobber -Force
+
+    }
+#elseif (($null -eq $AZResourceManagerModules)) {
+#    Write-Information -MessageData "Azure Resouce Manager Modules are not loaded, loading Modules" -InformationAction Continue 
+#    #Find-Module -Name AzureRM* | Install-Module -AllowClobber -Force    
+#}
     else{
     Write-Information -MessageData "Azure Modules are loaded." -InformationAction Continue 
     }
     
-Import-AZprofile
-
+    Import-AZprofile 
+    #Get-AzureSubscription | Select-AzureSubscription  | Out-Null
 
 try{
-    $Azcontext = Get-AzContext -ErrorAction SilentlyContinue | Where-Object {$_.Account -eq $Account}
+ 
+    $Azcontext = Get-AzContext | Where-Object {$_.Account.Id -eq  $Account}
+    $Azcontext.Account.Id
+    $Azcontext.Tenant
 }
 catch{
     Write-Error -Message "Cannot get current AzureConext"
 
-}    
+} 
+
     try{
             if($null -eq $Azcontext){
-                Connect-AzAccount -Tenant  $TenantID 
+                Write-Information -MessageData "Context not found from save Profile. Connecting to Azure" -InformationAction Continue
+                Connect-AzAccount -Tenant $Azcontext.Account.Tenant.Id
                 #Linux path
                 if(-Not (Test-Path $AZContextPath) ){
                 Write-Information -MessageData "Saving Azure Account Context." -InformationAction Continue
@@ -70,12 +91,14 @@ catch{
     $AZResouceGroups = Get-AzResourceGroup
    
     if($AZResouceGroups){
-    foreach($AZResouceGroup in $AZResouceGroups){
-    #Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
+        foreach($AZResouceGroup in $AZResouceGroups){
+            Write-Information -MessageData "Removing resource group $($AZResouceGroup.ResourceGroupName)" -InformationAction Continue
+                Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
+        }
     }
     else{
-        Write-Information -MessageData "Azure Modules are loaded." -InformationAction Continue 
+        Write-Information -MessageData "Azure Modules are loaded: $($_)" -InformationAction Continue 
 
     }
-    }
+
     Disconnect-AzAccount
