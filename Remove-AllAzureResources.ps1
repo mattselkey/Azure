@@ -23,7 +23,6 @@ param (
     [String]
     $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json"
 )
-#https://blogs.technet.microsoft.com/dataplatform/2016/11/16/set-your-powershell-session-to-automatically-log-into-azure/
 
 BEGIN{
 function Import-AZprofile{
@@ -38,6 +37,7 @@ function Import-AZprofile{
         Pause
         exit
     }
+}
 
 function Import-AllAzureModules{
 
@@ -58,15 +58,11 @@ function Import-AllAzureModules{
         Write-Information -MessageData "Azure Modules are loaded." -InformationAction Continue 
         }
 
-    }
-
 }
 
 Import-AllAzureModules
 Import-AZprofile 
 }
-
-
 
 
 PROCESS{
