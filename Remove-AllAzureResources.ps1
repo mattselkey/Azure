@@ -41,21 +41,17 @@ function Import-AZprofile{
 
 function Import-AllAzureModules{
 
-    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" -InformationAction Continue
+    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" 
     $AZModules = Get-Module | Where-Object {($_.Name -like "*Az.*")} 
     #$AZResourceManagerModules = Get-Module | Where-Object {($_.Name -like "AzureRM*")}
     
     if(($null -eq $AZModules)){
-        Write-Information -MessageData "Azure Modules are not loaded, loading Modules" -InformationAction Continue 
+        Write-Information -MessageData "Azure Modules are not loaded, loading Modules" 
         Find-Module -Name Az | Install-Module -AllowClobber -Force
     
         }
-    #elseif (($null -eq $AZResourceManagerModules)) {
-    #    Write-Information -MessageData "Azure Resouce Manager Modules are not loaded, loading Modules" -InformationAction Continue 
-    #    #Find-Module -Name AzureRM* | Install-Module -AllowClobber -Force    
-    #}
         else{
-        Write-Information -MessageData "Azure Modules are loaded." -InformationAction Continue 
+        Write-Information -MessageData "Azure Modules are loaded."
         }
 
 }
