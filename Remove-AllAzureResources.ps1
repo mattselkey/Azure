@@ -23,7 +23,7 @@ param (
     [String]
     $AZContextPath="../../AZURE/azureprofile.json"
 )
-
+#https://blogs.technet.microsoft.com/dataplatform/2016/11/16/set-your-powershell-session-to-automatically-log-into-azure/
 function Import-AZprofile{
 
     Import-AzureRmContext -Path “c:\AzureProfile\azureprofile.json” | Out-Null
