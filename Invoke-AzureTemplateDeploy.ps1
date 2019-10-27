@@ -26,3 +26,4 @@ param (
 Connect-AzAccount
 $templateUri = "./ARM_Templates/"
 New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateUri $templateUri -Location $location
+

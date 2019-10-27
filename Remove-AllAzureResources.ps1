@@ -25,8 +25,9 @@ param (
 )
 #https://blogs.technet.microsoft.com/dataplatform/2016/11/16/set-your-powershell-session-to-automatically-log-into-azure/
 function Import-AZprofile{
-
-    Import-AzureRmContext -Path “c:\AzureProfile\azureprofile.json” | Out-Null
+    Write-Information -MessageData "Logging into Azure using saved profile" -InformationAction Continue 
+    Import-AzureRmContext -Path $AZContextPath | Out-Null
+    Get-AzureRmSubscription  | Select-AzureRmSubscription  | Out-Null
 
 }
 
@@ -39,6 +40,9 @@ if($null -eq $AZModules){
     else{
     Write-Information -MessageData "Azure Modules are loaded." -InformationAction Continue 
     }
+    
+Import-AZprofile
+
 
 try{
     $Azcontext = Get-AzContext -ErrorAction SilentlyContinue | Where-Object {$_.Account -eq $Account}
