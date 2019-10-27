@@ -23,7 +23,34 @@ param (
     $Location
 )
 
+BEGIN{
+    function Import-AZprofile{
+        Write-Information -MessageData "Logging into Azure using saved profile" -InformationAction Continue 
+        try{
+            $AzContent = Import-AzContext -Path $AZContextPath -ErrorAction stop
+            #Import-AzContext -Path $AZContextPath 
+            return $AzContent
+        }
+        catch{
+            Write-Error -Message "Error loading profile: $($_)"
+            Pause
+            exit
+        }
+    }
+
+}
+
+
+PROCESS{
+
 Connect-AzAccount
 $templateUri = "./ARM_Templates/"
 New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateUri $templateUri -Location $location
 
+}
+
+END{
+
+
+
+}
