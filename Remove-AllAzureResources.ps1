@@ -25,39 +25,11 @@ param (
 )
 
 BEGIN{
-function Import-AZprofile{
-    Write-Information -MessageData "Logging into Azure using saved profile"
-    try{
-        $AzContent = Import-AzContext -Path $AZContextPath -ErrorAction stop
-        #Import-AzContext -Path $AZContextPath 
-        return $AzContent
-    }
-    catch{
-        Write-Error -Message "Error loading profile: $($_)"
-        Pause
-        exit
-    }
-}
 
-function Import-AllAzureModules{
-
-    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" 
-    $AZModules = Get-Module | Where-Object {($_.Name -like "*Az.*")} 
-    #$AZResourceManagerModules = Get-Module | Where-Object {($_.Name -like "AzureRM*")}
-    
-    if(($null -eq $AZModules)){
-        Write-Information -MessageData "Azure Modules are not loaded, loading Modules" 
-        Find-Module -Name Az | Install-Module -AllowClobber -Force
-    
-        }
-        else{
-        Write-Information -MessageData "Azure Modules are loaded."
-        }
-
-}
+Import-module -Name ./Modules/* -Verbose
 
 Import-AllAzureModules
-Import-AZprofile 
+Import-AZprofile -ProfilePath $AZContextPath
 }
 
 

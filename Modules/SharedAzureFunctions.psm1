@@ -16,9 +16,16 @@
 
 
 function Import-AZprofile{
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [String]
+    $ProfilePath 
+)
+
     Write-Information -MessageData "Logging into Azure using saved profile"
     try{
-        $AzContent = Import-AzContext -Path $AZContextPath -ErrorAction stop
+        $AzContent = Import-AzContext -Path $ProfilePath  -ErrorAction stop
         #Import-AzContext -Path $AZContextPath 
         return $AzContent
     }
