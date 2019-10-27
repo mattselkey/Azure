@@ -27,9 +27,9 @@ param (
 BEGIN{
 
 Import-module -Name ./Modules/* -Verbose
-
 Import-AllAzureModules
 Import-AZprofile -ProfilePath $AZContextPath
+
 }
 
 
@@ -51,8 +51,10 @@ catch{
                 #Linux path
                 if(-Not (Test-Path $AZContextPath) ){
                 Write-Information -MessageData "Saving Azure Account Context."
-                Save-AzContext -Path $AZContextPath -Force
-                }
+             #   Save-AzContext -Path $AZContextPath -Force
+             Get-AzDefault
+             
+            }
             }
         }
         catch{

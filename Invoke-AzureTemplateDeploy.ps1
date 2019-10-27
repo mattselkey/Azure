@@ -20,31 +20,15 @@ param (
     [String]
     $Resourcegroup,
     [String]
-    $Location
+    $Location,
+    [String]
+    $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json"
 )
 
 BEGIN{
-    function Import-AZprofile{
-        [CmdletBinding()]
-        param (
-            [Parameter()]
-            [String]
-            $AZContextPath
-        )
-
-        Write-Information -MessageData "Logging into Azure using saved profile" -InformationAction Continue 
-        try{
-            $AzContent = Import-AzContext -Path $AZContextPath -ErrorAction stop
-            #Import-AzContext -Path $AZContextPath 
-            return $AzContent
-        }
-        catch{
-            Write-Error -Message "Error loading profile: $($_)"
-            Pause
-            exit
-        }
-    }
-
+    Import-module -Name ./Modules/* -Verbose
+    Import-AllAzureModules
+    Import-AZprofile -ProfilePath $AZContextPath
 }
 
 

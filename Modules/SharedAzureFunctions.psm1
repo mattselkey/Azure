@@ -23,7 +23,7 @@ param (
     $ProfilePath 
 )
 
-    Write-Information -MessageData "Logging into Azure using saved profile"
+    Write-Information -MessageData "Loading Azure from location $($ProfilePath)."
     try{
         $AzContent = Import-AzContext -Path $ProfilePath  -ErrorAction stop
         #Import-AzContext -Path $AZContextPath 
