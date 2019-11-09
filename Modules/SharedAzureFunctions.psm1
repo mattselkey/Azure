@@ -23,10 +23,10 @@ param (
     $ProfilePath 
 )
 
-    Write-Information -MessageData "Loading Azure from location $($ProfilePath)." -InformationAction Continue
+    Write-Information -MessageData "Loading Azure from location $($ProfilePath)." -InformationAction $info
     try{
-        $AzContent = Import-AzContext -Path $ProfilePath  -ErrorAction stop
-        
+        $AzContent = Import-AzContext -Path $ProfilePath -ErrorAction Stop
+        Import-AzContext -Path "/home/mskey/Documents/AZURE/azureprofile.json"
         #Import-AzContext -Path $AZContextPath 
         return $AzContent
     }
@@ -39,18 +39,17 @@ param (
 
 function Import-AllAzureModules{
 
-    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" -InformationAction Continue
-    $AZModules = Get-Module | Where-Object {($_.Name -like "*Az.*")} 
-    #$AZResourceManagerModules = Get-Module | Where-Object {($_.Name -like "AzureRM*")}
-    
+    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" -InformationAction $info
+    $AZModules = Get-InstalledModule -Name Az
+
     if(($null -eq $AZModules)){
-        Write-Information -MessageData "Azure Modules are not loaded, loading Modules" -InformationAction Continue
-        Find-Module -Name Az | Install-Module -AllowClobber -Force
+        Write-Information -MessageData "Azure Modules are not loaded, loading Modules" -InformationAction $info
+        Find-Module -Name Az | Install-Module -AllowPrerelease -AllowClobber -Force
     
         }
         else{
-        Write-Information -MessageData "Azure Modules are loaded."
-        Update-Module -Name Az
+        Write-Information -MessageData "Azure Modules are loaded. Checking for latest" -InformationAction $info
+        Update-Module -AllowPrerelease -Name Az -Force
         }
 
 }
