@@ -18,18 +18,32 @@
 param (
     [Parameter()]
     [String]
-    $Resourcegroup,
+    $resourceGroupName,
     [String]
     $Location,
     [String]
-    $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json"
+    $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json",
+    [Parameter(Mandatory=$false)]
+    [Bool]
+    $Silent=$true
 )
 
 BEGIN{
+
+    if($Silent){
+        $Global:info="SilentlyContinue"
+    }
+    else{
+        $Global:info="Continue"
+    }
+    
+
+
     Import-module -Name ./Modules/* -Verbose
     Import-AllAzureModules
     Import-LocalAZprofile -ProfilePath $AZContextPath
-    Get-InstalledModule -Name Az.Resources | Install-Module -AllowClobber -Force
+    Find-module -Name Az.Resources | Where-Object {$_.Version -eq "1.7.1" } | Install-Module -AllowClobber -Force
+    Import-Module -Name Az.Resources
     #Get-InstalledModule -Name Az.* | Uninstall-Module -Force
     #Get-InstalledModule -Name Az | Uninstall-Module -Force
     #New-AzResourceGroupDeployment  -resource 
@@ -38,15 +52,16 @@ BEGIN{
 
 PROCESS{
 
+$templateFolder = "./ARM_Templates/ResourceGroups/"
 
-$templateFolder = "./ARM_Templates/"
+New-AzResourceGroup -Name $resourceGroupName -Location "West Europe"
 
 New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$($templateFolder)template.json" -TemplateParameterFile "$($templateFolder)parameters.json" 
 
 }
 
 END{
-
+    $null = Disconnect-AzAccount
 
 
 }
