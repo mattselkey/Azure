@@ -40,7 +40,7 @@ Import-Module -Name ./Modules/* -Verbose
 Write-Information -MessageData "Importing Az Modules" -InformationAction $info 
 Import-AllAzureModules
 Write-Information -MessageData "Importing Porfile" -InformationAction $info
-Import-AZprofile -ProfilePath $AZContextPath
+Import-localAZprofile -ProfilePath $AZContextPath
 }
 
 

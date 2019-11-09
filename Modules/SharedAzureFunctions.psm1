@@ -25,7 +25,7 @@ param (
 
     Write-Information -MessageData "Loading Azure from location $($ProfilePath)." -InformationAction Continue
     try{
-        $AzContent = Get-AzContext -Path $ProfilePath  -ErrorAction stop
+        $AzContent = Import-AzContext -Path $ProfilePath  -ErrorAction stop
         
         #Import-AzContext -Path $AZContextPath 
         return $AzContent
