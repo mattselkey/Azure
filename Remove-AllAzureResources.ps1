@@ -1,11 +1,13 @@
 <#
 .SYNOPSIS
-    Short description
+    Connect to Azure and remove ALL reosurce groups
 .DESCRIPTION
-    Long description
+    !!!USE WITH CARE!!!
+    This script can be used to clear an Azure subscription of ALL reource groups.
 .EXAMPLE
-    PS C:\> <example usage>
-    Explanation of what the example does
+    PS >./Remove-AllAzureResources.ps1 -Account matthewselkirk@live.com -Silent $false
+    The above will remove all resources in the account with the associated email address, setting silent to $false
+    will provide additional information at the commandline for each step and failure.
 .INPUTS
     Inputs (if any)
 .OUTPUTS
@@ -15,13 +17,16 @@
 #>
 [CmdletBinding()]
 param (
-    [Parameter()]
+    [Parameter(Mandatory=$true)]
     [String]
     $Account,
+    [Parameter(Mandatory=$false)]
     [String]
     $TenantID,
+    [Parameter(Mandatory=$false)]
     [String]
     $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json",
+    [Parameter(Mandatory=$false)]
     [Bool]
     $Silent=$true
 )
@@ -41,6 +46,8 @@ Write-Information -MessageData "Importing Az Modules" -InformationAction $info
 Import-AllAzureModules
 Write-Information -MessageData "Importing Profile" -InformationAction $info
 Import-localAZprofile -ProfilePath $AZContextPath
+
+
 }
 
 
