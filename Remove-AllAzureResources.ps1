@@ -55,18 +55,24 @@ PROCESS{
 
 try{
     Write-Information -Message "Getting loaded AZcontext for account $($Account)" -InformationAction $info 
-    $Azcontext = Get-AzContext | Where-Object {$_.Account.Id -eq  $Account}
-    
-    Write-Information -Message "AZcontext successfully found for  $($Azcontext.Account.Id)" -InformationAction $info 
+    $Azcontext = Get-AzContext | Where-Object {$_.Account.Id -eq $Account}
+
+    if($Azcontext){
+        Write-Information -Message "AZcontext successfully found for  $($Azcontext.Account.Id)" -InformationAction $info 
+    }
 }
 catch{
     Write-Information -Message "Cannot get current AzureContext. Will try to reconnect." -InformationAction $info 
 } 
 
     try{
+        
             if($null -eq $Azcontext){
                 Write-Information -MessageData "Context not found from save Profile. Connecting to Azure" -InformationAction $info  
-                Connect-AzAccount -Tenant $Azcontext.Tenant.Id
+                
+                
+                Connect-AzAccount
+                
                 #Linux path
                 if(-Not (Test-Path $AZContextPath) ){
                 Write-Information -MessageData "Saving Azure Account Context." -InformationAction $info  
