@@ -28,15 +28,20 @@ param (
 BEGIN{
     Import-module -Name ./Modules/* -Verbose
     Import-AllAzureModules
-    Import-AZprofile -ProfilePath $AZContextPath
+    Import-LocalAZprofile -ProfilePath $AZContextPath
+    Get-InstalledModule -Name Az.Resources | Install-Module -AllowClobber -Force
+    #Get-InstalledModule -Name Az.* | Uninstall-Module -Force
+    #Get-InstalledModule -Name Az | Uninstall-Module -Force
+    #New-AzResourceGroupDeployment  -resource 
 }
 
 
 PROCESS{
 
 
-$templateUri = "./ARM_Templates/"
-New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateUri $templateUri -Location $location
+$templateFolder = "./ARM_Templates/"
+
+New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$($templateFolder)template.json" -TemplateParameterFile "$($templateFolder)parameters.json" 
 
 }
 

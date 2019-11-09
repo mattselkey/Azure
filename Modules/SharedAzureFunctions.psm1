@@ -43,12 +43,12 @@ function Import-AllAzureModules{
 
     if(($null -eq $AZModules)){
         Write-Information -MessageData "Azure Modules are not loaded, loading Modules" -InformationAction $info
-        Find-Module -Name Az | Install-Module -AllowPrerelease -AllowClobber -Force
+        Find-Module -Name Az | Install-Module -AllowClobber -Force
     
         }
         else{
         Write-Information -MessageData "Azure Modules are loaded. Checking for latest" -InformationAction $info
-        Update-Module -AllowPrerelease -Name Az -Force
+        Update-Module -Name Az -Force
         }
 
 }
