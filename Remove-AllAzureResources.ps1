@@ -39,7 +39,7 @@ else{
 Import-Module -Name ./Modules/* -Verbose
 Write-Information -MessageData "Importing Az Modules" -InformationAction $info 
 Import-AllAzureModules
-Write-Information -MessageData "Importing Porfile" -InformationAction $info
+Write-Information -MessageData "Importing Profile" -InformationAction $info
 Import-localAZprofile -ProfilePath $AZContextPath
 }
 
@@ -47,24 +47,28 @@ Import-localAZprofile -ProfilePath $AZContextPath
 PROCESS{
 
 try{
- 
+    Write-Information -Message "Getting loaded AZcontext for account $($Account)" -InformationAction $info 
     $Azcontext = Get-AzContext | Where-Object {$_.Account.Id -eq  $Account}
+    
+    Write-Information -Message "AZcontext successfully found for  $($Azcontext.Account.Id)" -InformationAction $info 
 }
 catch{
-    Write-Error -Message "Cannot get current AzureConext"
-
+    Write-Information -Message "Cannot get current AzureContext. Will try to reconnect." -InformationAction $info 
 } 
 
     try{
             if($null -eq $Azcontext){
-                Write-Information -MessageData "Context not found from save Profile. Connecting to Azure" 
-                Connect-AzAccount -Tenant $Azcontext.Account.Tenant.Id
+                Write-Information -MessageData "Context not found from save Profile. Connecting to Azure" -InformationAction $info  
+                Connect-AzAccount -Tenant $Azcontext.Tenant.Id
                 #Linux path
                 if(-Not (Test-Path $AZContextPath) ){
-                Write-Information -MessageData "Saving Azure Account Context."
-             #   Save-AzContext -Path $AZContextPath -Force
-             Get-AzDefault
+                Write-Information -MessageData "Saving Azure Account Context." -InformationAction $info  
+                    #Save-AzContext -Path $AZContextPath -Force
+                Get-AzDefault
              
+            }
+            else{
+                Write-Information -MessageData "Context found from saved Profile." -InformationAction $info 
             }
             }
         }
@@ -78,12 +82,12 @@ catch{
    
     if($AZResouceGroups){
         foreach($AZResouceGroup in $AZResouceGroups){
-            Write-Information -MessageData "Removing resource group $($AZResouceGroup.ResourceGroupName)"
+                Write-Information -MessageData "Removing resource group $($AZResouceGroup.ResourceGroupName)" -InformationAction $info  
                 Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
         }
     }
     else{
-        Write-Information -MessageData "The resource groups found. Nothing to do."
+        Write-Information -MessageData "No resource groups found. Nothing to do." -InformationAction $info  
 
     }
 }

@@ -26,7 +26,6 @@ param (
     Write-Information -MessageData "Loading Azure from location $($ProfilePath)." -InformationAction $info
     try{
         $AzContent = Import-AzContext -Path $ProfilePath -ErrorAction Stop
-        Import-AzContext -Path "/home/mskey/Documents/AZURE/azureprofile.json"
         #Import-AzContext -Path $AZContextPath 
         return $AzContent
     }
