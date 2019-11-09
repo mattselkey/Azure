@@ -15,7 +15,7 @@
 #>
 
 
-function Import-AZprofile{
+function Import-localAZProfile{
 [CmdletBinding()]
 param (
     [Parameter()]
@@ -23,9 +23,10 @@ param (
     $ProfilePath 
 )
 
-    Write-Information -MessageData "Loading Azure from location $($ProfilePath)."
+    Write-Information -MessageData "Loading Azure from location $($ProfilePath)." -InformationAction Continue
     try{
-        $AzContent = Import-AzContext -Path $ProfilePath  -ErrorAction stop
+        $AzContent = Get-AzContext -Path $ProfilePath  -ErrorAction stop
+        
         #Import-AzContext -Path $AZContextPath 
         return $AzContent
     }
@@ -38,17 +39,18 @@ param (
 
 function Import-AllAzureModules{
 
-    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" 
+    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" -InformationAction Continue
     $AZModules = Get-Module | Where-Object {($_.Name -like "*Az.*")} 
     #$AZResourceManagerModules = Get-Module | Where-Object {($_.Name -like "AzureRM*")}
     
     if(($null -eq $AZModules)){
-        Write-Information -MessageData "Azure Modules are not loaded, loading Modules" 
+        Write-Information -MessageData "Azure Modules are not loaded, loading Modules" -InformationAction Continue
         Find-Module -Name Az | Install-Module -AllowClobber -Force
     
         }
         else{
         Write-Information -MessageData "Azure Modules are loaded."
+        Update-Module -Name Az
         }
 
 }

@@ -21,15 +21,26 @@ param (
     [String]
     $TenantID,
     [String]
-    $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json"
+    $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json",
+    [Bool]
+    $Silent=$true
 )
 
 BEGIN{
 
-Import-module -Name ./Modules/* -Verbose
-Import-AllAzureModules
-Import-AZprofile -ProfilePath $AZContextPath
 
+if($Silent){
+    $Global:info="SilentlyContinue"
+}
+else{
+    $Global:info="Continue"
+}
+
+Import-Module -Name ./Modules/* -Verbose
+Write-Information -MessageData "Importing Az Modules" -InformationAction $info 
+Import-AllAzureModules
+Write-Information -MessageData "Importing Porfile" -InformationAction $info
+Import-AZprofile -ProfilePath $AZContextPath
 }
 
 
