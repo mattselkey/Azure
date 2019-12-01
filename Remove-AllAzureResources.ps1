@@ -47,7 +47,6 @@ Import-AllAzureModules
 Write-Information -MessageData "Importing Profile" -InformationAction $info
 Import-localAZprofile -ProfilePath $AZContextPath
 
-
 }
 
 
@@ -69,8 +68,7 @@ catch{
         
             if($null -eq $Azcontext){
                 Write-Information -MessageData "Context not found from save Profile. Connecting to Azure" -InformationAction $info  
-                
-                
+
                 Connect-AzAccount
                 
                 #Linux path
@@ -91,7 +89,7 @@ catch{
             exit
     }
 
-    $AZResouceGroups = Get-AzResourceGroup
+    $AZResouceGroups = Get-AzResourceGroup 
    
     if($AZResouceGroups){
         foreach($AZResouceGroup in $AZResouceGroups){

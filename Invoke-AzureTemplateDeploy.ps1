@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-    Short description
+    Deploy reources from a ARM template file.
 .DESCRIPTION
-    Long description
+    
 .EXAMPLE
-    PS C:\> <example usage>
-    Explanation of what the example does
+    PS C:\>.\Invoke-AzureTemplateDeploy.ps1 -ResourceGroupName resourceGroup -Location location -AZContextPath PathToProfileJSON
+    
 .INPUTS
     Inputs (if any)
 .OUTPUTS
@@ -16,11 +16,13 @@
 
 [CmdletBinding()]
 param (
-    [Parameter()]
+    [Parameter(Mandatory=$true)]
     [String]
-    $resourceGroupName,
+    $ResourceGroupName,
+    [Parameter(Mandatory=$false)]
     [String]
     $Location,
+    [Parameter(Mandatory=$false)]
     [String]
     $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json",
     [Parameter(Mandatory=$false)]
@@ -37,8 +39,6 @@ BEGIN{
         $Global:info="Continue"
     }
     
-
-
     Import-module -Name ./Modules/* -Verbose
     Import-AllAzureModules
     Import-LocalAZprofile -ProfilePath $AZContextPath
@@ -47,6 +47,11 @@ BEGIN{
     #Get-InstalledModule -Name Az.* | Uninstall-Module -Force
     #Get-InstalledModule -Name Az | Uninstall-Module -Force
     #New-AzResourceGroupDeployment  -resource 
+
+   $scriptBlock = {Get-AzureRmLocation | select-object -ExpandProperty Location}
+
+   Register-ArgumentCompleter -CommandName Invoke-AzureTemplateDeploy -ParameterName Location -ScriptBlock $scriptBlock 
+
 }
 
 
