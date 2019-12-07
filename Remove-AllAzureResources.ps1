@@ -47,7 +47,6 @@ Import-localAZprofile -ProfilePath $AZContextPath -Silent $false
 
 }
 
-
 PROCESS{
 
 try{
@@ -101,6 +100,7 @@ catch{
 
     }
 }
+
 END{
 
     $null = Disconnect-AzAccount
