@@ -24,7 +24,7 @@ param (
     $Location,
     [Parameter(Mandatory=$false)]
     [String]
-    $AZContextPath="$env:USERPROFILE\azureprofile.json",
+    $AZContextPath,
     [Parameter(Mandatory=$false)]
     [Bool]
     $Silent=$true
@@ -39,6 +39,22 @@ BEGIN{
         $InformationPreference="Continue"
     }
     
+    if(!$AZContextPath){
+        switch([System.Environment]::OSVersion.Platform){
+            "Unix"{
+                Write-Information -MessageData "Checking installed modules"
+                $AZContextPath =  "$($env:HOME)\azureprofile.json"
+
+            }
+            "Win32NT"{
+                $AZContextPath = "$($env:USERPROFILE)\azureprofile.json"
+
+            }
+        
+        }
+    }
+
+
     Write-Information -MessageData "Checking installed modules"
     Import-module -Name ./Modules/* -Verbose
     Import-AllAzureModules -Silent $Silent
