@@ -60,7 +60,7 @@ function Import-AllAzureModules{
     }
 
     Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed"
-    $AZModules = Get-InstalledModule -Name Az
+    $AZModules = Get-InstalledModule -Name Az -ErrorAction SilentlyContinue
 
     if(($null -eq $AZModules)){
         Write-Information -MessageData "Azure Modules are not loaded, loading Modules"
