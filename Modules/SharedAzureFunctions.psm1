@@ -16,9 +16,8 @@
 
 
 function Import-localAZProfile{
-[CmdletBinding()]
 param (
-    [Parameter()]
+    [Parameter(Mandatory=$true)]
     [String]
     $ProfilePath,
     [Parameter(Mandatory=$false)]
@@ -48,7 +47,6 @@ else{
 }
 
 function Import-AllAzureModules{
-    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$false)]
         [Bool]
