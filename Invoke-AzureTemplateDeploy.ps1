@@ -43,12 +43,13 @@ BEGIN{
     Import-module -Name ./Modules/* -Verbose
     Import-AllAzureModules -Silent $Silent
     Import-LocalAZprofile -ProfilePath $AZContextPath -Silent $Silent
-    Find-module -Name Az.Resources | Where-Object {$_.Version -eq "1.8.0" } | Install-Module -AllowClobber -Force
+    #Find-module -Name Az.Resources | Where-Object {$_.Version -eq "1.8.0" } | Install-Module -AllowClobber -Force
     $azModule = Get-Module -Name Az.Resources
     if($azModule){
         Write-Information -MessageData "Az.resources is already loaded"
     }else{
-        Write-Information -MessageData "Modules: $azModule"
+        Write-Information -MessageData "Modules are: $azModule"
+        Write-Information -MessageData "Importing Az.Reosurces module"
         Import-Module -Name Az.Resources
     }
     #remove
