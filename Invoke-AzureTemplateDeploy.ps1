@@ -39,11 +39,17 @@ BEGIN{
         $Global:info="Continue"
     }
     
+    Write-Information -MessageData "Checking installed modules" -InformationAction $info
     Import-module -Name ./Modules/* -Verbose
     Import-AllAzureModules
     Import-LocalAZprofile -ProfilePath $AZContextPath
     Find-module -Name Az.Resources | Where-Object {$_.Version -eq "1.7.1" } | Install-Module -AllowClobber -Force
-    Import-Module -Name Az.Resources
+    $azModule = Get-Module -Name Az.Resources
+    if($azModule){
+        Write-Information -MessageData "Az.resources is already loaded" -InformationAction $info
+    }else{
+        Import-Module -Name Az.Resources
+    }
     #Get-InstalledModule -Name Az.* | Uninstall-Module -Force
     #Get-InstalledModule -Name Az | Uninstall-Module -Force
     #New-AzResourceGroupDeployment  -resource 
