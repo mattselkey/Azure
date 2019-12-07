@@ -41,7 +41,9 @@ else{
         #Import-AzContext -Path $AZContextPath 
         }else{
             Write-Information -MessageData "Cannot find Azure profile in path $($ProfilePath). Performing manual logon."
-            Connect-AzAccount  
+            Write-Information -MessageData "!!!! LOOK FOR THE BROWSER LOGON PROMPT POPUP !!!!"
+            Connect-AzAccount
+            Save-AzContext -Path $ProfilePath
         }
         
         return $AzContent
