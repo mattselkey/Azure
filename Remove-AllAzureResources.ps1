@@ -59,7 +59,7 @@ try{
     }
 }
 catch{
-    Write-Information -Message "Error: $($_)"
+    Write-Information -Message "Error is: $($_)"
     Write-Information -Message "Cannot get current AzureContext. Will try to reconnect."
 } 
 
