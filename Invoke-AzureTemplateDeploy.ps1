@@ -41,9 +41,9 @@ BEGIN{
     
     Write-Information -MessageData "Checking installed modules"
     Import-module -Name ./Modules/* -Verbose
-    Import-AllAzureModules
-    Import-LocalAZprofile -ProfilePath $AZContextPath
-    Find-module -Name Az.Resources | Where-Object {$_.Version -eq "1.7.1" } | Install-Module -AllowClobber -Force
+    Import-AllAzureModules -Silent $Silent
+    Import-LocalAZprofile -ProfilePath $AZContextPath -Silent $Silent
+    Find-module -Name Az.Resources | Where-Object {$_.Version -eq "1.8.0" } | Install-Module -AllowClobber -Force
     $azModule = Get-Module -Name Az.Resources
     if($azModule){
         Write-Information -MessageData "Az.resources is already loaded"
@@ -51,13 +51,15 @@ BEGIN{
         Write-Information -MessageData "Modules: $azModule"
         Import-Module -Name Az.Resources
     }
+    #Ena
+    Enable-AzureRmAlias
     #Get-InstalledModule -Name Az.* | Uninstall-Module -Force
-    #Get-InstalledModule -Name Az | Uninstall-Module -Force
+    #Get-InstalledModule -Name AzureRM | Uninstall-Module -Force
     #New-AzResourceGroupDeployment  -resource 
 
-   $scriptBlock = {Get-AzureRmLocation | select-object -ExpandProperty Location}
+    #$scriptBlock = {Get-AzureRmLocation | select-object -ExpandProperty Location}
 
-   Register-ArgumentCompleter -CommandName Invoke-AzureTemplateDeploy -ParameterName Location -ScriptBlock $scriptBlock 
+    #Register-ArgumentCompleter -CommandName Invoke-AzureTemplateDeploy -ParameterName Location -ScriptBlock $scriptBlock 
 
 }
 

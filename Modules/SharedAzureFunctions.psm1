@@ -20,10 +20,21 @@ function Import-localAZProfile{
 param (
     [Parameter()]
     [String]
-    $ProfilePath 
+    $ProfilePath,
+    [Parameter(Mandatory=$false)]
+    [Bool]
+    $Silent=$true
 )
 
-    Write-Information -MessageData "Loading Azure from location $($ProfilePath)." -InformationAction $info
+if($Silent){
+    $InformationPreference="SilentlyContinue"
+}
+else{
+    $InformationPreference="Continue"
+}
+
+
+    Write-Information -MessageData "Loading Azure from location $($ProfilePath)."
     try{
         $AzContent = Import-AzContext -Path $ProfilePath -ErrorAction Stop
         #Import-AzContext -Path $AZContextPath 
@@ -37,17 +48,29 @@ param (
 }
 
 function Import-AllAzureModules{
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$false)]
+        [Bool]
+        $Silent=$true
+    )
+    if($Silent){
+        $InformationPreference="SilentlyContinue"
+    }
+    else{
+        $InformationPreference="Continue"
+    }
 
-    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed" -InformationAction $info
+    Write-Information -MessageData "Checking if Azure Modules are loaded. Loading if needed"
     $AZModules = Get-InstalledModule -Name Az
 
     if(($null -eq $AZModules)){
-        Write-Information -MessageData "Azure Modules are not loaded, loading Modules" -InformationAction $info
+        Write-Information -MessageData "Azure Modules are not loaded, loading Modules"
         Find-Module -Name Az | Install-Module -AllowClobber -Force
     
         }
         else{
-        Write-Information -MessageData "Azure Modules are loaded. Checking for latest" -InformationAction $info
+        Write-Information -MessageData "Azure Modules are loaded. Checking for latest"
         Update-Module -Name Az -Force
         }
 
