@@ -33,18 +33,16 @@ param (
 
 BEGIN{
 
-
-if($Silent){
-    $Global:info="SilentlyContinue"
-}
-else{
-    $Global:info="Continue"
-}
+ if($Silent){
+     $InformationPreference="SilentlyContinue"
+ }else{
+     $InformationPreference="Continue"
+ }
 
 Import-Module -Name ./Modules/* -Verbose
-Write-Information -MessageData "Importing Az Modules" -InformationAction $info 
+Write-Information -MessageData "Importing Az Modules"
 Import-AllAzureModules -Silent $false
-Write-Information -MessageData "Importing Profile" -InformationAction $info
+Write-Information -MessageData "Importing Profile"
 Import-localAZprofile -ProfilePath $AZContextPath -Silent $false
 
 }
@@ -53,33 +51,34 @@ Import-localAZprofile -ProfilePath $AZContextPath -Silent $false
 PROCESS{
 
 try{
-    Write-Information -Message "Getting loaded AZcontext for account $($Account)" -InformationAction $info 
+    Write-Information -Message "Getting loaded AZcontext for account $($Account)"
     $Azcontext = Get-AzContext | Where-Object {$_.Account.Id -eq $Account}
 
     if($Azcontext){
-        Write-Information -Message "AZcontext successfully found for  $($Azcontext.Account.Id)" -InformationAction $info 
+        Write-Information -Message "AZcontext successfully found for  $($Azcontext.Account.Id)"
     }
 }
 catch{
-    Write-Information -Message "Cannot get current AzureContext. Will try to reconnect." -InformationAction $info 
+    Write-Information -Message "Error: $($_)"
+    Write-Information -Message "Cannot get current AzureContext. Will try to reconnect."
 } 
 
     try{
         
             if($null -eq $Azcontext){
-                Write-Information -MessageData "Context not found from save Profile. Connecting to Azure" -InformationAction $info  
+                Write-Information -MessageData "Context not found from save Profile. Connecting to Azure"  
 
                 Connect-AzAccount
                 
                 #Linux path
                 if(-Not (Test-Path $AZContextPath) ){
-                Write-Information -MessageData "Saving Azure Account Context." -InformationAction $info  
+                Write-Information -MessageData "Saving Azure Account Context." 
                     #Save-AzContext -Path $AZContextPath -Force
                 Get-AzDefault
              
             }
             else{
-                Write-Information -MessageData "Context found from saved Profile." -InformationAction $info 
+                Write-Information -MessageData "Context found from saved Profile." 
             }
             }
         }
@@ -93,12 +92,12 @@ catch{
    
     if($AZResouceGroups){
         foreach($AZResouceGroup in $AZResouceGroups){
-                Write-Information -MessageData "Removing resource group $($AZResouceGroup.ResourceGroupName)" -InformationAction $info  
+                Write-Information -MessageData "Removing resource group $($AZResouceGroup.ResourceGroupName)"  
                 Remove-AzResourceGroup -Name $AZResouceGroup.ResourceGroupName -Force
         }
     }
     else{
-        Write-Information -MessageData "No resource groups found. Nothing to do." -InformationAction $info  
+        Write-Information -MessageData "No resource groups found. Nothing to do."
 
     }
 }

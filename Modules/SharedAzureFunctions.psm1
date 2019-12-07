@@ -37,16 +37,15 @@ else{
     try{
         
         if (Test-Path -Path $ProfilePath){
-        $AzContent = Import-AzContext -Path $ProfilePath -ErrorAction Stop
+        Import-AzContext -Path $ProfilePath -ErrorAction Stop
         #Import-AzContext -Path $AZContextPath 
         }else{
             Write-Information -MessageData "Cannot find Azure profile in path $($ProfilePath). Performing manual logon."
             Write-Information -MessageData "!!!! LOOK FOR THE BROWSER LOGON PROMPT POPUP !!!!"
             Connect-AzAccount
-            Save-AzContext -Path $ProfilePath
         }
-        
-        return $AzContent
+
+        Save-AzContext -Path $ProfilePath
     }
     catch{
         Write-Error -Message "Error loading profile: $($_)"
