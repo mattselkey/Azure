@@ -33,21 +33,22 @@ param (
 BEGIN{
 
     if($Silent){
-        $Global:info="SilentlyContinue"
+        $InformationPreference="SilentlyContinue"
     }
     else{
-        $Global:info="Continue"
+        $InformationPreference="Continue"
     }
     
-    Write-Information -MessageData "Checking installed modules" -InformationAction $info
+    Write-Information -MessageData "Checking installed modules"
     Import-module -Name ./Modules/* -Verbose
     Import-AllAzureModules
     Import-LocalAZprofile -ProfilePath $AZContextPath
     Find-module -Name Az.Resources | Where-Object {$_.Version -eq "1.7.1" } | Install-Module -AllowClobber -Force
     $azModule = Get-Module -Name Az.Resources
     if($azModule){
-        Write-Information -MessageData "Az.resources is already loaded" -InformationAction $info
+        Write-Information -MessageData "Az.resources is already loaded"
     }else{
+        Write-Information -MessageData "Modules: $azModule"
         Import-Module -Name Az.Resources
     }
     #Get-InstalledModule -Name Az.* | Uninstall-Module -Force
