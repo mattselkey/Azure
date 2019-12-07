@@ -36,7 +36,7 @@ else{
     Write-Information -MessageData "Loading Azure from location $($ProfilePath)."
     try{
         
-        Test-Path($ProfilePath){
+        if (Test-Path -Path $ProfilePath){
         $AzContent = Import-AzContext -Path $ProfilePath -ErrorAction Stop
         #Import-AzContext -Path $AZContextPath 
         }else{
