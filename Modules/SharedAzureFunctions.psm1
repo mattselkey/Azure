@@ -35,8 +35,15 @@ else{
 
     Write-Information -MessageData "Loading Azure from location $($ProfilePath)."
     try{
+        
+        Test-Path($ProfilePath){
         $AzContent = Import-AzContext -Path $ProfilePath -ErrorAction Stop
         #Import-AzContext -Path $AZContextPath 
+        }else{
+            Write-Information -MessageData "Cannot find Azure profile in path $($ProfilePath). Performing manual logon."
+            Connect-AzAccount  
+        }
+        
         return $AzContent
     }
     catch{

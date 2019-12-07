@@ -24,7 +24,7 @@ param (
     $Location,
     [Parameter(Mandatory=$false)]
     [String]
-    $AZContextPath="/home/mskey/Documents/AZURE/azureprofile.json",
+    $AZContextPath="$env:USERPROFILE\azureprofile.json",
     [Parameter(Mandatory=$false)]
     [Bool]
     $Silent=$true
@@ -51,8 +51,10 @@ BEGIN{
         Write-Information -MessageData "Modules: $azModule"
         Import-Module -Name Az.Resources
     }
-    #Ena
-    Enable-AzureRmAlias
+    #remove
+    
+    
+
     #Get-InstalledModule -Name Az.* | Uninstall-Module -Force
     #Get-InstalledModule -Name AzureRM | Uninstall-Module -Force
     #New-AzResourceGroupDeployment  -resource 
