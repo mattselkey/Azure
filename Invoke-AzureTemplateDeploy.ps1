@@ -44,11 +44,9 @@ BEGIN{
             "Unix"{
                 Write-Information -MessageData "Checking installed modules"
                 $AZContextPath =  "$($env:HOME)\azureprofile.json"
-
             }
             "Win32NT"{
                 $AZContextPath = "$($env:USERPROFILE)\azureprofile.json"
-
             }
         
         }
@@ -93,7 +91,11 @@ New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFil
 
 #https://docs.microsoft.com/en-us/powershell/module/azurerm.keyvault/new-azurermkeyvault?view=azurermps-6.13.0
 
-New-AzureRmKeyVault  -VaultName "$($resourceGroupName)KeyVault" -ResourceGroupName $resourceGroupName -Location "West Europe"
+
+    Write-Information -MessageData "Creating new keyvault"
+    New-AzureRmKeyVault  -VaultName "$($resourceGroupName)KeyVault" -ResourceGroupName $resourceGroupName -Location "West Europe"
+
+
 
 }
 
