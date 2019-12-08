@@ -91,6 +91,10 @@ New-AzResourceGroup -Name $resourceGroupName -Location "West Europe"
 
 New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "$($templateFolder)template.json" -TemplateParameterFile "$($templateFolder)parameters.json" 
 
+#https://docs.microsoft.com/en-us/powershell/module/azurerm.keyvault/new-azurermkeyvault?view=azurermps-6.13.0
+
+New-AzureRmKeyVault  -VaultName "$($resourceGroupName)KeyVault" -ResourceGroupName $resourceGroupName -Location "West Europe"
+
 }
 
 END{
