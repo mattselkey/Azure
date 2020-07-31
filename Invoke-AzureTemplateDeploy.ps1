@@ -68,7 +68,10 @@ BEGIN{
     }
     #remove
     
-    
+        Install-Module -Name AzureRM -AllowClobber
+        Import-Module -Name AzureRM.KeyVault
+
+
 
     #Get-InstalledModule -Name Az.* | Uninstall-Module -Force
     #Get-InstalledModule -Name AzureRM | Uninstall-Module -Force
