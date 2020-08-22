@@ -26,31 +26,59 @@ param (
     $NumberOfVMs, 
     [Parameter(Mandatory=$False)]
     [String]
-    $vmSize = "Standard_B2ms"  
+    $vmSize = "Standard_B2ms",
+    [Parameter(Mandatory=$False)]
+    [String]
+    $context = "Visual Studio Premium with MSDN" 
 )
 
+$currentContext = Get-AzContext | Where-Object {$_.Subscription.Name  -EQ $context}
+
+if(!$currentContext){
 Connect-AzAccount
+}
 $sub = Get-AzSubscription 
 Select-AzSubscription -Subscription $sub.Name
 
 #Resource Group
 $ResourceGroupName = "$($ResourcePreFixName)_RG"
-
 New-AzResourceGroup -Name $ResourceGroupName -Location $Location
 
-#Virtual Network 
+
+#Virtual Network
 $networkName = "$($ResourcePreFixName)-VNET"
-$nicPrefix = "NIC-"
-$vnet = Get-AzVirtualNetwork -Name $NetworkName -ResourceGroupName $ResourceGroupName
- 
+$vNetParams = @{
+
+    ResourceGroupName = $ResourceGroupName
+    Location = $Location
+    Name = $networkName
+    AddressPrefix = "10.0.0.0/16"
+
+}
+$virtualNetwork = New-AzVirtualNetwork @vNetParams
+
+$subnetParams = @{
+    Name = "default" 
+    AddressPrefix = "10.0.0.0/24"
+    VirtualNetwork = $virtualNetwork
+}
+
+Add-AzVirtualNetworkSubnetConfig @subnetParams
+
+$virtualNetwork | Set-AzVirtualNetwork
+$vNet = Get-AzVirtualNetwork -Name $NetworkName -ResourceGroupName $ResourceGroupName
+
+
 #Virtual Machines
+$nicPrefix = "NIC"
 $publisherName = "MicrosoftWindowsServer"
 $offer = "WindowsServer"
 $skus = "2016-Datacenter"
-$credential = Get-Credential
+$credential = Get-Credential -Message "Enter a username and password for the virtual machine(s)."
+
 
 #Create
-for($i = 0; $i -le $NumberOfVMs.count; $i++)  
+for($i = 0; $i -le $NumberOfVMs; $i++)  
 {
 $CurrentVM = $NumberOfVMs[$i] + 1    
 $ServerName = "VM_$($CurrentVM)"
@@ -60,16 +88,17 @@ $virtualNicParams = @{
     Name = "$($nicPrefix)_$($ServerName)"
     ResourceGroupName = $ResourceGroupName
     Location = $Location
-    SubnetId = "$($Vnet.Subnets[0].Id)"
+    SubnetId = "$($vNet.Subnets[0].Id)"
 }
 
 #Create new virtual Network Interface
- $NIC = New-AzNetworkInterface @virtualNicParams
+ $NetworkCard = New-AzNetworkInterface @virtualNicParams
  
-$VirtualMachine = New-AzVMConfig -VMName $ServerName -VMSize $VMSize
+$VirtualMachineConfig = New-AzVMConfig -VMName $ServerName -VMSize $VMSize
+$VirtualMachine = Get-AzVM -Name $ServerName
 
 $newVMParams = @{
-        VM = $ServerName
+        VM = $VirtualMachine
         Windows = $true
         computerName = $ServerName
         Credential = $credential
@@ -77,22 +106,13 @@ $newVMParams = @{
         EnableAutoUpdate = $True
     }
 
- $VirtualMachine = Set-AzVMOperatingSystem @$newVMParams
+$VirtualMachineConfig = Set-AzVMOperatingSystem @$newVMParams
  
- $VirtualMachine = Add-AzVMNetworkInterface -VM $VirtualMachine -Id $NIC.Id
-
-$newVMParams = @{
-    VM = $ServerName
-    Windows = $true
-    computerName = $ServerName
-    Credential = $credential
-    ProvisionVMAgent = $True
-    EnableAutoUpdate = $True
-    }
+$VirtualMachineConfig = Add-AzVMNetworkInterface -VM $VirtualMachineConfig -Id $NetworkCard.Id
 
 $vmSourceParams = @{
 
-    VM = $VirtualMachine
+    VM = $VirtualMachineConfig
     PublisherName = $publisherName
     Offer = $offer
     Skus = $skus
