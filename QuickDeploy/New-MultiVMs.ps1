@@ -15,16 +15,16 @@
 #>
 [CmdletBinding()]
 param (
-    [Parameter()]
+    [Parameter(Mandatory=$False)]
     [String]
     $ResourcePreFixName="MultiVM",
-    [Parameter()]
+    [Parameter(Mandatory=$False)]
     [String]
     $Location="northeurope",   
     [Parameter(Mandatory=$True)]
     [Int32]
     $NumberOfVMs, 
-    [Parameter(Mandatory=$True)]
+    [Parameter(Mandatory=$False)]
     [String]
     $vmSize = "Standard_B2ms"  
 )
