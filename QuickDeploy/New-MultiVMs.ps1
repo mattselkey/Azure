@@ -78,10 +78,10 @@ $credential = Get-Credential -Message "Enter a username and password for the vir
 
 
 #Create
-for($i = 0; $i -le $NumberOfVMs; $i++)  
+for($i = 0; $i -le $NumberOfVMs -1; $i++)  
 {
-$CurrentVM = $NumberOfVMs[$i] + 1    
-$ServerName = "VM_$($CurrentVM)"
+$CurrentVM = $NumberOfVMs[$i]    
+$ServerName = "VM-$($CurrentVM)"
 
 #Virtual Nic Splat    
 $virtualNicParams = @{
@@ -95,10 +95,8 @@ $virtualNicParams = @{
  $NetworkCard = New-AzNetworkInterface @virtualNicParams
  
 $VirtualMachineConfig = New-AzVMConfig -VMName $ServerName -VMSize $VMSize
-$VirtualMachine = Get-AzVM -Name $ServerName
-
 $newVMParams = @{
-        VM = $VirtualMachine
+        VM = $VirtualMachineConfig
         Windows = $true
         computerName = $ServerName
         Credential = $credential
@@ -106,7 +104,7 @@ $newVMParams = @{
         EnableAutoUpdate = $True
     }
 
-$VirtualMachineConfig = Set-AzVMOperatingSystem @$newVMParams
+$VirtualMachineConfig = Set-AzVMOperatingSystem @newVMParams
  
 $VirtualMachineConfig = Add-AzVMNetworkInterface -VM $VirtualMachineConfig -Id $NetworkCard.Id
 
@@ -116,18 +114,18 @@ $vmSourceParams = @{
     PublisherName = $publisherName
     Offer = $offer
     Skus = $skus
-    Version = $latest
+    Version = "latest"
 }
 
 $VirtualMachine = Set-AzVMSourceImage @vmSourceParams
  
 $newVmParams = @{
     ResourceGroupName = $ResourceGroupName 
-    Location = $LocationName
+    Location = $Location
     VM = $VirtualMachine
     Verbose = $True
 }
 
-New-AzVM -ResourceGroupName @newVmParams
+New-AzVM @newVmParams
 
 }
