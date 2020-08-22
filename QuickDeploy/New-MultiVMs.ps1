@@ -80,7 +80,7 @@ $credential = Get-Credential -Message "Enter a username and password for the vir
 #Create
 for($i = 0; $i -le $NumberOfVMs -1; $i++)  
 {
-$CurrentVM = $NumberOfVMs[$i]    
+$CurrentVM = $i + 1    
 $ServerName = "VM-$($CurrentVM)"
 
 #Virtual Nic Splat    
