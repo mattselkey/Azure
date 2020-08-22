@@ -35,7 +35,9 @@ Select-AzSubscription -Subscription $sub.Name
 
 #Resource Group
 $ResourceGroupName = "$($ResourcePreFixName)_RG"
- 
+
+New-AzResourceGroup -Name $ResourceGroupName -Location $Location
+
 #Virtual Network 
 $networkName = "$($ResourcePreFixName)-VNET"
 $nicPrefix = "NIC-"
