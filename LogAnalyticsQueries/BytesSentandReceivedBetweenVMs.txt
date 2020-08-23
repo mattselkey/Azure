@@ -1,0 +1,4 @@
+VMConnection
+| summarize sum(BytesSent), sum(BytesReceived) by bin(TimeGenerated, 1hr), Computer
+| order by Computer desc
+| render timechart 
